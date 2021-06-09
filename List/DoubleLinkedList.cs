@@ -15,8 +15,7 @@ namespace List
             get => GetNodeByIndex(index).Value;
             set => GetNodeByIndex(index).Value = value;
         }
-
-        // 23.1 3 конструктора (пустой)  
+ 
         public DoubleLinkedList()
         {
             Length = 0;
@@ -24,7 +23,6 @@ namespace List
             _tail = _root;
         }
 
-        // 23.2 3 конструктора (на основе одного элемента)
         public DoubleLinkedList(int value)
         {
             Length = 1;
@@ -32,7 +30,6 @@ namespace List
             _tail = _root;
         }
 
-        // 23.3 3 конструктора (на основе массива )
         public DoubleLinkedList(int[] values)
         {
             if (values.Length != 0)
@@ -54,7 +51,6 @@ namespace List
             }
         }
 
-        // 1. Добавление значения в конец
         public void AddValueLastInList(int value)
         {
             DoubleLink newLink = new DoubleLink(value);
@@ -71,7 +67,6 @@ namespace List
             }
         }
 
-        // 2. Добавление значения в начало
         public void AddValueByFirstInList(int value)
         {
             DoubleLink newLink = new DoubleLink(value);
@@ -89,7 +84,6 @@ namespace List
             Length++;
         }
 
-        // 3. Добавление значения по индексу
         public void AddValueByIndexInList(int index, int value)
         {
             Exceptions.CheckExceptionIndex(index, Length);
@@ -111,25 +105,21 @@ namespace List
             Length++;
         }
 
-        // 4. Удаление из конца одного элемента
         public void RemoveValueInEndInList()
         {
             RemoveGivenQuantityOfValuesTheEndByList();
         }
 
-        // 5. Удаление из начала одного элемента
         public void RemoveValueInStartInList()
         {
             RemoveGivenQuantityOfValuesTheStartByList();
         }
 
-        // 6. Удаление по индексу одного элемента
         public void RemoveValueByIndexInList(int index)
         {
             RemoveGivenQuantityOfValuesByIndexInList(index);
         }
 
-        // 7. Удаление из конца N элементов
         public void RemoveGivenQuantityOfValuesTheEndByList(int qty = 1)
         {
             Exceptions.CheckExceptionByCountToRemove(qty);
@@ -157,7 +147,6 @@ namespace List
             }
         }
 
-        // 8. Удаление из начала N элементов
         public void RemoveGivenQuantityOfValuesTheStartByList(int count = 1)
         {
             Exceptions.CheckExceptionByCountToRemove(count);
@@ -188,7 +177,6 @@ namespace List
             }
         }
 
-        // 9. Удаление по индексу N элементов
         public void RemoveGivenQuantityOfValuesByIndexInList(int index, int count = 1)
         {
             Exceptions.CheckExceptionByCountToRemove(count);
@@ -221,7 +209,6 @@ namespace List
             }
         }
 
-        // 12. Первый индекс по значению
         public int GetFirstIndexByValue(int value)
         {
             DoubleLink current = _root;
@@ -238,7 +225,6 @@ namespace List
             return index;
         }
 
-        // 13. Изменение по индексу
         public void ChangeValueByIndex(int index, int value)
         {
             Exceptions.CheckExceptionIndex(index + 1, Length);
@@ -270,7 +256,6 @@ namespace List
             current.Value = value;
         }
 
-        // 14. Реверс (123 -> 321)  ///переделать
         public void ReversList()
         {
             if (Length > 1)
@@ -289,25 +274,21 @@ namespace List
             }
         }
 
-        // 15. Поиск значения максимального элемента
         public int FindMaxValueByList()
         {
             return FindIndexMaxOrMinValueByList(maxOrMin: true, value: true);
         }
 
-        // 16. Поиск значения минимального элемента
         public int FindMinValueByList()
         {
             return FindIndexMaxOrMinValueByList(maxOrMin: false, value: true);
         }
 
-        // 17. Поиск индекс максимального элемента
         public int FindIndexMaxValueByList()
         {
             return FindIndexMaxOrMinValueByList(maxOrMin: true);
         }
 
-        // 18. Поиск индекс минимального элемента
         public int FindIndexMinValueByList()
         {
             return FindIndexMaxOrMinValueByList(maxOrMin: false);
@@ -344,26 +325,22 @@ namespace List
             return false;
         }
 
-        // 19. Сортировка по возрастанию
         public void SortAscending()
         {
             SortingList();
         }
 
-        // 20. Сортировка по убыванию
         public void SortDescending()
         {
             SortingList(false);
         }
 
 
-        // 21. Удаление по значению первого
         public int RemoveByValueFirstMatchInList(int value)
         {
             return RemoveByValuesInDoubleLinkedList(value, true);
         }
 
-        // 22. Удаление по значению всех
         public int RemoveByValueAllMatchInList(int value)
         {
             return RemoveByValuesInDoubleLinkedList(value);
@@ -418,7 +395,6 @@ namespace List
             return count;
         }
 
-        // 24. Добавление списка в конец
         public void AddNewListToEndList(int[] addArray)
         {
             DoubleLinkedList copyList = CopyLinkedList(addArray);
@@ -439,7 +415,6 @@ namespace List
             Length += copyList.Length;
         }
 
-        // 25. Добавление списка в начало
         public void AddNewListToBeginList(int[] addArray)
         {
             DoubleLinkedList copyList = CopyLinkedList(addArray);
@@ -460,7 +435,6 @@ namespace List
             Length += copyList.Length;
         }
 
-        // 26. Добавление списка по индексу
         public void AddNewListByIndexInList(int index, int[] addArray)
         {
             Exceptions.CheckExceptionIndex(index, Length);
@@ -497,7 +471,6 @@ namespace List
             }
             Length += copyList.Length;
         }
-
 
         public override string ToString()
         {
@@ -571,7 +544,6 @@ namespace List
         {
             throw new NotImplementedException();
         }
-
 
         private DoubleLink GetNodeByIndex(int index)
         {

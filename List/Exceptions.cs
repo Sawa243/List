@@ -30,11 +30,11 @@ namespace List
                 throw new ArgumentException("нельзя удалить отрицательное количество элементов");
             }
         }
-        public static void CheckExceptionByCountToRemoveInLast(int length, int qty)
+        public static void CheckExceptionByCountToRemoveInLast(int length, int value)
         {
-            if (length < qty)
+            if (length < value)
             {
-                throw new ArgumentException("Вы пытаетесь удалить, больше элементов, чем их есть");
+                throw new ArgumentException("Вы пытаетесь удалить больше элементов, чем их есть");
             }
         }
     }
