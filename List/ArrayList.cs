@@ -6,360 +6,389 @@ namespace List
 {
     public class ArrayList
     {
-        private int[] _array;
-        public int Length { get; private set; }
+        private int[] _list;
+        public int Length { get; set; }
 
-        public ArrayList()
-        {
-            Length = 0;
-            _array = new int[10];
-        }
-        public ArrayList(int value)
-        {
-            if (value<0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            Length = 1;
-            _array = new int[10];
-            _array[0] = value;
-        }
-        public ArrayList(int[] value)
-        {
-            Length = value.Length;
-            _array = value;
-            UpSize();
-        }
 
         public int this[int index]
         {
             get
             {
-                if (index<0|| index>Length)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-                return _array[index];
+                Exceptions.CheckExceptionIndex(index, Length);
+                return _list[index];
             }
             set
             {
-                if (index < 0 || index > Length)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-                _array[index] = value;
+                Exceptions.CheckExceptionIndex(index, Length);
+                _list[index] = value;
             }
         }
-        public void Add(int value)
-        {
-            if (Length == _array.Length)
-            {
-                UpSize();
-            }
-            _array[Length] = value;
-            Length++;
-        }
-        public void AddElementInBeginning(int value)
-        {
 
-            if (Length == _array.Length)
+        // 23.1 3 конструктора (пустой)  
+        public ArrayList()
+        {
+            Length = 0;
+            _list = new int[10];
+        }
+
+        // 23.2 3 конструктора (на основе одного элемента)
+        public ArrayList(int value)
+        {
+            Length = 1;
+            _list = new int[10];
+            _list[0] = value;
+        }
+
+        // 23.3 3 конструктора (на основе массива )
+        public ArrayList(int[] list)
+        {
+            _list = list;
+            Length = _list.Length;
+        }
+
+        // 1. Добавление значения в конец
+        public void AddValueLastInList(int value)
+        {
+            AddValueByIndexInList(Length, value);
+        }
+
+        // 2. Добавление значения в начало
+        public void AddValueByFirstInList(int value)
+        {
+            AddValueByIndexInList(0, value);
+        }
+
+        // 3. Добавление значения по индексу
+        public void AddValueByIndexInList(int index, int value)
+        {
+            Exceptions.CheckExceptionIndex(index, Length);
+            CheckUpSize();
+            for (int i = Length; i > index; i--)
             {
-                UpSize();
+                _list[i] = _list[i - 1];
             }
-            for(int i = Length; i> 0; i--)
-            {
-                _array[i] = _array[i + 1];
-            }
-            _array[0] = value;
+            _list[index] = value;
             Length++;
         }
-        public void RemoveAdd()
+
+        // 4. Удаление из конца одного элемента
+        public void RemoveValueInEndInList()
         {
-            //_array[Length] = 0;
-            Length--;
-            if (Length < (0.67d * _array.Length + 1))
-            {
-                ReduceSize();
-            }
+            RemoveGivenQuantityOfValuesByIndexInList(Length);
         }
-        public void RemoveFirsElement()
+
+        // 5. Удаление из начала одного элемента
+        public void RemoveValueInStartInList()
         {
-            for (int i = 0; i >= Length; i++)
-            {
-                _array[i] = _array[i+1];
-            }
-            Length--;
-            if (Length < (0.67d * _array.Length + 1))
-            {
-                ReduceSize();
-            }
+            RemoveGivenQuantityOfValuesByIndexInList(0);
         }
-        public void DeletByIndex(int value)
+
+        // 6. Удаление по индексу одного элемента
+        public void RemoveValueByIndexInList(int index)
         {
-            if (value < 0 || value > Length)
+            Exceptions.CheckExceptionIndex(index, Length);
+            RemoveGivenQuantityOfValuesByIndexInList(index);
+        }
+
+        //7. Удаление из конца N элементов
+        public void RemoveGivenQuantityOfValuesTheEndByList(int count)
+        {
+            Exceptions.CheckExceptionByCountToRemove(count);
+            Exceptions.CheckExceptionByCountToRemoveInLast(Length, count);
+            for (int i = 0; i < count; i++)
             {
-                throw new IndexOutOfRangeException();
-            }
-            
-            if (value != Length)
-            {
-                for (int i = value; i <= Length; i++)
+                if (Length == 0)
                 {
-                    _array[i] = _array[i + 1];
+                    return;
                 }
-                Length--;
+                RemoveGivenQuantityOfValuesByIndexInList(Length);
+            }
+        }
+
+        // 8. Удаление из начала N элементов
+        public void RemoveGivenQuantityOfValuesTheStartByList(int count)
+        {
+            Exceptions.CheckExceptionByCountToRemove(count);
+            Exceptions.CheckExceptionByCountToRemoveInLast(Length, count);
+            RemoveGivenQuantityOfValuesByIndexInList(0, count);
+        }
+
+        // 9. Удаление по индексу N элементов
+        public void RemoveGivenQuantityOfValuesByIndexInList(int index, int count = 1)
+        {
+            Exceptions.CheckExceptionIndex(index, Length);
+            Exceptions.CheckExceptionByCountToRemoveInLast(Length, count);
+            Exceptions.CheckExceptionByCountToRemove(count);
+            if (Length != 0)
+            {
+                for (int i = index; i < Length - count; i++)
+                {
+                    _list[i] = _list[i + count];
+                }
+                CheckDownSize(count);
             }
             else
             {
-                Length--;
-            }
-            if (Length < (0.67d * _array.Length + 1))
-            {
-                ReduceSize();
+                Exceptions.CheckNullReferenceException(Length);
             }
         }
-        public void RemovingNElementsFromTheEnd(int value)
-        {
-            if (value > Length || value < 0)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            Length =Length-value;
-            if (Length < (0.67d * _array.Length + 1))
-            {
-                ReduceSize();
-            }
-        }
-        public void RemovingNElementsFromTheBeginning(int value)
-        {
-            if (Length < value || value < 0)
-            {
-                throw new IndexOutOfRangeException();
-            }
 
-            for (int i = 0;i<Length - value;i++)
-            {
-                _array[i] = _array[i+value];
-            }
-            Length = Length - value;
-            if (Length < (0.67d * _array.Length + 1))
-            {
-                ReduceSize();
-            }
-        }
-        public void DeletingNElementsByIndex(int index, int count)
+        // 12. Первый индекс по значению
+        public int GetFirstIndexByValue(int value)
         {
-            if (Length < count || count < 0)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            if (index < 0 || index > Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-
-            for (int i = index; i < Length - count; i++)
-            {
-                _array[i] = _array[i+count];
-            }
-            Length = Length - count;
-            if (Length < (_array.Length/2))
-            {
-                ReduceSize();
-            }
-        }
-        public int FirstIndexByValue(int value)
-        {
-            for(int i = 0; i<= Length;i++)
-            {
-                if(_array[i]== value)
-                {
-                    return i;
-                }
-
-            }
-            
-            return -1;
-        } 
-        public void ChangesByindex (int value, int index)
-        {
-            if (index < 0 || index >= Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            _array[index] = value;
-        }
-        public int AccessByIndex (int index)
-        {
-            if (index < 0 || index > Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            return _array[index];
-        }
-        public void AddByIndex(int value, int index)
-        {
-            if (Length == _array.Length)
-            {
-                UpSize();
-            }
-            if (index < 0 || index > Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            for (int i = Length; i >= index; i--)
-            {
-                _array[i] = _array[i + 1];
-            }
-            _array[index] = value;
-
-            Length++;
-        }
-        public int TheMaximumElementValue()
-        {
-            int max = _array[0];
-            for (int i = 1; i <= Length; i++)
-            {
-                if (_array[i] > max)
-                {
-                    max = _array[i];
-                }
-            }
-            return max;
-        }
-        public int TheMinElementValue()
-        {
-            int min = _array[0];
-            for (int i = 1; i <= Length; i++)
-            {
-                if (_array[i] < min)
-                {
-                    min = _array[i];
-                }
-            }
-            return min;
-        }
-        public int TheIndexMaxValue()
-        {
-            int max = _array[0];
-            int maxIndex = 0;
-            for (int i = 1; i <= Length; i++)
-            {
-                if (_array[i] > max)
-                {
-                    max = _array[i];
-                    maxIndex = i;
-                }
-            }
-            return maxIndex;
-        }
-        public int TheIndexMinValue()
-        {
-            int min = _array[0];
-            int Index = 0;
-            for (int i = 1; i <= Length; i++)
-            {
-                if (_array[i] < min)
-                {
-                    min = _array[i];
-                    Index = i;
-                }
-            }
-            return Index;
-        }
-        public int[] Revers()
-        {
-            int tmp = 0;
-            for(int i = 0; i<Length/2; i++)
-            {
-                tmp = _array[i];
-                _array[i] = _array[Length-i-1];
-                _array[Length] = tmp;
-            }
-            return _array;
-        }
-        public void SortInAscendingOrder ()
-        {
+            int index = -1;
             for (int i = 0; i < Length; i++)
             {
-                for (int j = 0; j <= Length - i; j++)
+                if (_list[i] == value)
                 {
-                    if (_array[j] > _array[j + 1])
-                    {
-                        Swap(ref _array[j], ref _array[j + 1]);
-                    }
+                    index = i;
+                    break;
                 }
             }
+            return index;
         }
-        public void SortInDescendingOrder()
+
+        // 13. Изменение по индексу
+        public void ChangeValueByIndex(int index, int value)
         {
-            for (int i = 0; i < Length - 1; i++)
+            Exceptions.CheckExceptionIndex(index, Length);
+            _list[index] = value;
+        }
+
+        // 14. Реверс (123 -> 321)
+        public void ReversList()
+        {
+            int halfLength = Length / 2;
+            for (int i = 0; i < halfLength; i++)
             {
-                int indexOfMax = i;
-                for (int j = i; j < Length; j++)
-                {
-                    if (_array[indexOfMax] < _array[j])
-                    {
-                        indexOfMax = j;
-                    }
-                }
-                Swap(ref _array[i], ref _array[indexOfMax]);
+                int tmp = _list[i];
+                _list[i] = _list[Length - i - 1];
+                _list[Length - i - 1] = tmp;
             }
         }
-        private void Swap(ref int e1,ref int e2)
+
+        // 15. Поиск значения максимального элемента
+        public int FindMaxValueByList()
         {
-            var temp = e1;
-            e1 = e2;
-            e2 = temp;
+            return _list[FindIndexMaxValueByList()];
         }
-        private void UpSize()
+
+        // 16. Поиск значения минимального элемента
+        public int FindMinValueByList()
         {
-            int newLength = (int)(_array.Length * 1.33d + 1);
-            int[] tmpArray = new int[newLength];
-            for (int i = 0; i < _array.Length; i++)
+            return _list[FindIndexMinValueByList()];
+        }
+
+        // 17. Поиск индекс максимального элемента
+        public int FindIndexMaxValueByList()
+        {
+            int index = FindIndexMaxOrMinValueByList();
+            return index;
+        }
+
+        // 18. Поиск индекс минимального элемента
+        public int FindIndexMinValueByList()
+        {
+            int index = FindIndexMaxOrMinValueByList(false);
+            return index;
+        }
+
+        // 19. Сортировка по возрастанию
+        public void SortAscending()
+        {
+            SortAscendingOrDescending();
+        }
+
+        // 20. Сортировка по убыванию
+        public void SortDescending()
+        {
+            SortAscendingOrDescending(false);
+        }
+
+        // 21. Удаление по значению первого
+        public int RemoveByValueFirstMatchInList(int value)
+        {
+            return RemoveByValueFirstOrAllMatchInList(value, true);
+        }
+
+        // 22. Удаление по значению всех(?вернуть кол-во)
+        public int RemoveByValueAllMatchInList(int value)
+        {
+            return RemoveByValueFirstOrAllMatchInList(value);
+        }
+
+        // 24. Добавление списка в конец
+        public void AddNewListToEndList(int[] array)
+        {
+            AddNewListByIndexInList(Length, array);
+        }
+
+        // 25. Добавление списка в начало
+        public void AddNewListToBeginList(int[] array)
+        {
+            AddNewListByIndexInList(0, array);
+        }
+
+        // 26. Добавление списка по индексу
+        public void AddNewListByIndexInList(int index, int[] array)
+        {
+            Exceptions.CheckExceptionIndex(index, Length);
+            CheckUpSize(array.Length);
+            int generalLength = Length + array.Length;
+            int length = generalLength - array.Length - index;
+
+            for (int i = 0; i < length; i++)
             {
-                tmpArray[i] = _array[i];
+                _list[generalLength - i - 1] = _list[length - i - 1 + index];
             }
-            _array = tmpArray;
-        }
-        private void ReduceSize()
-        {
-            int newLength = (int)(_array.Length * 0.67d + 1);
-            int[] tmpArray = new int[newLength];
-            for (int i = 0; i < _array.Length; i++)
+
+            for (int i = 0; i < array.Length; i++)
             {
-                tmpArray[i] = _array[i];
+                _list[index++] = array[i];
+                Length++;
             }
-            _array = tmpArray;
+
         }
+
         public override bool Equals(object obj)
         {
             ArrayList arrayList = (ArrayList)obj;
+            if (arrayList == null)
+            {
+                return false;
+            }
             if (this.Length != arrayList.Length)
             {
                 return false;
             }
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < this.Length; i++)
             {
-                if (this._array[i] != arrayList._array[i])
+                if (this._list[i] != arrayList._list[i])
                 {
                     return false;
                 }
             }
             return true;
         }
+
         public override string ToString()
         {
-            string StringList = "";
+            string arrayToString = "";
             for (int i = 0; i < Length; i++)
             {
-                StringList += _array[i] + " ";
+                arrayToString += $"{_list[i]} ";
             }
-            return StringList;
+            return arrayToString;
         }
+
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            throw new NotImplementedException();
+        }
+
+        private int RemoveByValueFirstOrAllMatchInList(int value, bool oneElement = false)
+        {
+            int count = 0;
+            int index = -1;
+            for (int i = 0; i < Length; i++)
+            {
+                if (_list[i] == value)
+                {
+                    RemoveGivenQuantityOfValuesByIndexInList(i);
+                    if (oneElement)
+                    {
+                        index = i;
+                        break;
+                    }
+                    i--;
+                    count++;
+                }
+            }
+            if (oneElement)
+            {
+                return index;
+            }
+            return count;
+        }
+
+        private void SortAscendingOrDescending(bool signUpOrDown = true)
+        {
+            int tmp;
+            for (int i = 0; i < Length - 1; i++)
+            {
+                for (int j = i + 1; j < Length; j++)
+                {
+                    if (CheckingSignUpOrDown(_list[j], _list[i], signUpOrDown))
+                    {
+                        tmp = _list[j];
+                        _list[j] = _list[i];
+                        _list[i] = tmp;
+                    }
+                }
+            }
+        }
+        private int FindIndexMaxOrMinValueByList(bool maxOrMin = true)
+        {
+            Exceptions.CheckNullReferenceException(Length);
+            int index = 0;
+            int tmp = _list[0];
+            for (int i = 0; i < Length; i++)
+            {
+                if (CheckingSignUpOrDown(tmp, _list[i], maxOrMin))
+                {
+                    tmp = _list[i];
+                    index = i;
+                }
+            }
+            return index;
+        }
+
+        private static bool CheckingSignUpOrDown(int tmp, int current, bool signUpOrDown = true)
+        {
+            if (tmp < current && signUpOrDown ||
+               tmp > current && !signUpOrDown)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void CheckUpSize(int length = 0)
+        {
+            if (Length + length >= _list.Length)
+            {
+                UpSize(length);
+            }
+        }
+
+        private void CheckDownSize(int length = 1)
+        {
+            Length -= length;
+            if (Length < (_list.Length / 2))
+            {
+                DownSize();
+            }
+        }
+
+        private void UpSize(int length = 0)
+        {
+            int newLength = (int)((_list.Length + length + 1) * 1.33d);
+            int[] tmpList = new int[newLength];
+            for (int i = 0; i < _list.Length; i++)
+            {
+                tmpList[i] = _list[i];
+            }
+            _list = tmpList;
+        }
+        private void DownSize()
+        {
+            int newLength = (int)(_list.Length * 0.67d + 1);
+            int[] tmpList = new int[newLength];
+            for (int i = 0; i < tmpList.Length; i++)
+            {
+                tmpList[i] = _list[i];
+            }
+            _list = tmpList;
         }
     }
 }
